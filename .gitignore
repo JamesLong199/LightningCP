@@ -1,0 +1,83 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+
+# Virtual environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs and debug files
+*.log
+logs/
+wandb/
+tensorboard/
+*.out
+*.err
+
+# Cache / temp files
+*.tmp
+*.swp
+*.swo
+.DS_Store
+*.cache
+.cache/
+tmp/
+outputs/
+results/
+attention*/
+result_hdtf/
+result_mead/
+attn*/
+visualization*/
+stat*/
+test*/
+*plots/
+logs/
+
+# Dataset files
+data/
+datasets/
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.mp4
+*.wav
+*.txt
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Model weights and checkpoints
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.npy
+checkpoints/
+weights/
+assets/
+pretrained*/
+
+# Compiled C/C++ extensions
+build/
+dist/
+*.egg-info/
+
+# VSCode and IDE configs
+.vscode/
+.idea/
+
+# Sensitive configs
+*.pem
+*.key
+*.json
