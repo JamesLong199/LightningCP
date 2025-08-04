@@ -41,6 +41,8 @@ stat*/
 test*/
 *plots/
 logs/
+test*.sh
+vis*.py
 
 # Dataset files
 data/
