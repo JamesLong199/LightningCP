@@ -422,9 +422,6 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         # However, the upsampling interpolation output size can be forced to fit any upsampling size
         # on the fly if necessary.
 
-        print('unet 3d 424 update_past_memory:', update_past_memory, flush=True)
-        print('unet 3d 424 is_new_audio:', is_new_audio, flush=True)
-
         default_overall_up_factor = 2**self.num_upsamplers
 
         # upsample size should be forwarded when sample is not a multiple of `default_overall_up_factor`
@@ -444,16 +441,6 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         if self.config.center_input_sample:
             sample = 2 * sample - 1.0
 
-        if bg_features is not None:
-            print('unet 3d 447 bg_features.keys():', bg_features.keys(), flush=True)
-        # time
-        # print('unet 3d 445 timestep:', timestep, flush=True)
-        # print('unet 3d 445 type(timestep):', type(timestep), flush=True)
-        # print('unet 3d 445 torch.is_tensor(timestep):', torch.is_tensor(timestep), flush=True)
-        # if not torch.is_tensor(timestep):
-        #     print('unet 3d 445 len(timestep):', len(timestep), flush=True)
-
-        print('unet 3d 451 timestep:', timestep, flush=True)
         timesteps = timestep
         if isinstance(timesteps, list):
             # t_emb_list = []
@@ -493,9 +480,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
             # t_emb = self.time_proj(timesteps)
 
         num_parallel = len(timesteps)
-        print('unet 3d 488 num_parallel:', num_parallel, flush=True)
         timesteps = timesteps.repeat_interleave(2)
-        print('unet 3d 607 timesteps:', timesteps, flush=True)
         t_emb = self.time_proj(timesteps)
 
         # timesteps does not contain any weights and will always return f32 tensors
@@ -535,20 +520,6 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         # down
         down_block_res_samples = (sample,)
-
-        print('unet 3d 530 sample.shape:', sample.shape, flush=True) # 2, 320, 16, 64, 64
-        print('unet 3d 531 encoder_hidden_states.shape:', encoder_hidden_states.shape, flush=True) # 2, 4, 768
-        print('unet 3d 532 audio_embedding.shape:', audio_embedding.shape, flush=True) # 2, 16, 32, 768
-        print('unet 3d 533 audio_emotion.shape:', audio_emotion.shape, flush=True) # 2
-        print('unet 3d 534 uc_mask.shape:', uc_mask.shape, flush=True) # 32
-
-        # # print('unet 3d 615 remove_ref_list:', remove_ref_list, flush=True)
-        # print('unet 3d 535 quick_replicate:', quick_replicate, flush=True)
-        # if replicate_prv_feature is not None:
-        #     print('unet 3d 536 replicate_prv_feature is not None', flush=True)
-        # else:
-        #     print('unet 3d 537 replicate_prv_feature is None', flush=True)
-        # print('unet 3d 538 superfast_replicate:', superfast_replicate, flush=True)
 
         if quick_replicate and replicate_prv_feature is not None:
             if not superfast_replicate:
@@ -635,28 +606,13 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
                 if hasattr(upsample_block, "has_cross_attention") and upsample_block.has_cross_attention:
                     
-                    # print('unet 3d 610 sample.shape:', sample.shape, flush=True)
-                    # print('unet 3d 611 encoder_hidden_states.shape:', encoder_hidden_states.shape, flush=True)
-                    # print('unet 3d 612 audio_embedding.shape:', audio_embedding.shape, flush=True)
-                    # print('unet 3d 613 audio_emotion.shape:', audio_emotion.shape, flush=True)
-                    # print('unet 3d 614 uc_mask.shape:', uc_mask.shape, flush=True)
-                    # assert 0
+           
                     sample = sample.repeat(num_parallel, 1, 1, 1, 1)
                     encoder_hidden_states = encoder_hidden_states.repeat(num_parallel, 1, 1)
                     audio_embedding = audio_embedding.repeat(num_parallel, 1, 1, 1)
                     audio_emotion = audio_emotion.repeat(num_parallel) # not sure about the shape of audio_emotion
                     uc_mask = uc_mask.repeat(num_parallel)
-                    # ref_feature_list = [ref_features["up"][i].repeat(num_parallel, 1, 1) for i in range(len(ref_features["up"][i]))]
-                    # uc_mask ...
-                    print('unet 3d 610 sample.shape:', sample.shape, flush=True)
-                    print('unet 3d 610 len(res_samples):', len(res_samples), flush=True)
-                    print('unet 3d 610 res_samples[0].shape:', res_samples[0].shape, flush=True)
-                    print('unet 3d 611 encoder_hidden_states.shape:', encoder_hidden_states.shape, flush=True)
-                    print('unet 3d 612 audio_embedding.shape:', audio_embedding.shape, flush=True)
-                    print('unet 3d 613 audio_emotion.shape:', audio_emotion.shape, flush=True)
-                    print('unet 3d 614 uc_mask.shape:', uc_mask.shape, flush=True)
-                    # print('unet 3d 614 uc_mask:', uc_mask, flush=True)
-
+   
 
                     sample, audio_embedding, _ = upsample_block(
                         hidden_states=sample,

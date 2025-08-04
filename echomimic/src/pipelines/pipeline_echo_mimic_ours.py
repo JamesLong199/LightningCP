@@ -424,11 +424,11 @@ class Audio2VideoPipeline(DiffusionPipeline):
 
         whisper_chunks = self.audio_guider.feature2chunks(feature_array=whisper_feature, fps=fps)
 
-        print("whisper_chunks:", whisper_chunks.shape)
+        # print("whisper_chunks:", whisper_chunks.shape)
         audio_frame_num = whisper_chunks.shape[0]
         audio_fea_final = torch.Tensor(whisper_chunks).to(dtype=self.vae.dtype, device=self.vae.device)
         audio_fea_final = audio_fea_final.unsqueeze(0)
-        print("audio_fea_final:", audio_fea_final.shape)
+        # print("audio_fea_final:", audio_fea_final.shape)
         video_length = min(video_length, audio_frame_num)
         if video_length < audio_frame_num:
             audio_fea_final = audio_fea_final[:, :video_length, :, :]
@@ -470,7 +470,7 @@ class Audio2VideoPipeline(DiffusionPipeline):
                 interval_seq = list(range(0, num_inference_steps, cache_interval))
      
         interval_seq = sorted(interval_seq)
-        print('interval_seq:', interval_seq)
+        # print('interval_seq:', interval_seq)
 
         # prv_features = None
 

@@ -1,0 +1,77 @@
+## dependency models
+pretrained_base_model_path: "./pretrained_weights/sd-image-variations-diffusers/"
+pretrained_vae_path: "./pretrained_weights/sd-vae-ft-mse/"
+audio_model_path: "./pretrained_weights/audio_processor/whisper_tiny.pt"
+
+## echo mimic checkpoint
+denoising_unet_path: "./pretrained_weights/denoising_unet_acc.pth"
+reference_unet_path: "./pretrained_weights/reference_unet.pth"
+face_locator_path: "./pretrained_weights/face_locator.pth"
+motion_module_path: "./pretrained_weights/motion_module_acc.pth"
+
+## deonise model configs
+inference_config: "./configs/inference/inference_v2.yaml"
+weight_dtype: 'fp16'
+
+## test cases
+test_cases:
+  "./assets/test_imgs/a.png":
+    - "./assets/test_audios/echomimic_en.wav"
+  "./assets/test_imgs/b.png":
+    - "./assets/test_audios/echomimic_en_girl.wav"
+  "./assets/test_imgs/c.png":
+    - "./assets/test_audios/echomimic_en_girl.wav"
+  "./assets/test_imgs/d.png":
+    - "./assets/test_audios/echomimic_en_girl.wav"
+  "./assets/test_imgs/e.png":
+    - "./assets/test_audios/echomimic_en.wav"
+
+
+cfg: 0
+steps: 6
+acc_mode: True
+
+########## BG Cache params ###########
+bg_cache_kwargs:
+  bg_cache_interval: 1
+  use_masked_attention: False
+  masked_layers:
+    spatial: []
+    audio: []
+    temporal: []
+  remove_ref_list: ['upblock_3_layer_1']
+
+########### DeepCache params ###########
+deepcache_kwargs: 
+  cache_interval: 3
+  cache_layer_id: 0
+  cache_block_id: -1
+  uniform: true
+  interval_seq: [0, 1, 3, 5]
+
+parallel_unet_kwargs:
+  gpu_ids: [0]
+  max_parallel_per_gpu: 3
+  estimate_input_latents: True
+
+# ########### save params ###########
+save_kwargs:
+  save_dir: ./attention_data
+  save_layers: [
+                # 'downblock_0_layer_0', 
+                # 'downblock_0_layer_1', 
+                # # 'downblock_1_layer_0',
+                # # 'downblock_1_layer_1',  
+                # # 'upblock_2_layer_0', 
+                # # 'upblock_2_layer_1', 
+                # # 'upblock_2_layer_2',
+                # 'upblock_3_layer_0', 
+                # 'upblock_3_layer_1', 
+                # 'upblock_3_layer_2'
+                ]
+  save_types: [
+                # 'spatial', 
+                # # 'audio', 
+                # # 'spatial_0_cfg'
+                # # 'temporal',
+                ]

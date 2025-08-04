@@ -528,11 +528,10 @@ class TemporalBasicTransformerBlock(nn.Module):
         if bg_mode == 'read':
             feature_name = block_name[4:]
             hidden_states = merge_bg_tokens(mask_fg, bg_features, feature_name, hidden_states)
-            print('attention 516 hidden_states.shape:', hidden_states.shape, flush=True)
         elif bg_mode == 'write' or bg_mode == 'masked_attention_write':
             feature_name = block_name[4:]
             bg_features[feature_name] = hidden_states
-            print(f'attention 520 bg_features[{feature_name}].shape:', bg_features[feature_name].shape, flush=True)
+            # print(f'attention 520 bg_features[{feature_name}].shape:', bg_features[feature_name].shape, flush=True)
 
         # Temporal-Attention
         if self.unet_use_temporal_attention:

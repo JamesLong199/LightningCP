@@ -725,16 +725,12 @@ class FaceAnimatePipeline(DiffusionPipeline):
                 else:
                     parallel_indices = []
 
-                print('i:', i, flush=True)
-                print('parallel_indices:', parallel_indices, flush=True)
                 parallel_timesteps = [timesteps[j] for j in parallel_indices]
                 # print('parallel_timesteps:', parallel_timesteps, flush=True)
                 
                 parallel_t = [t]
                 if len(parallel_timesteps)>1:
                     parallel_t=parallel_timesteps
-                #     print('parallel_t:', parallel_t, flush=True)
-                print('parallel_t:', parallel_t, flush=True)
 
                 # Limit batch size to available GPUs * max_parallel
                 num_timesteps = len(parallel_t)
@@ -748,8 +744,7 @@ class FaceAnimatePipeline(DiffusionPipeline):
                     use_cached_bg = False
                 else:
                     use_cached_bg = True
-                print('use_cached_bg:', use_cached_bg, flush=True)
-
+       
                 if i == 0:
                     self.reference_unet(
                         ref_image_latents.repeat(
@@ -775,12 +770,10 @@ class FaceAnimatePipeline(DiffusionPipeline):
                 if estimate_input_latents:
                     if i < 10:
                         # print('face animate 620 latent_model_input.shape:', latent_model_input.shape, flush=True)
-                        print('early timesteps: use same latent model input for all parallel timesteps')
                         latent_model_input = latent_model_input.repeat(len(parallel_t), 1, 1, 1, 1)
                         # print('face animate 623 latent_model_input.shape:', latent_model_input.shape, flush=True)
                     else:
                         # latent_input = latent_model_input
-                        print('later timesteps: use different latent model input for each parallel timestep')
                         latent_model_input_list = [latent_model_input]
                         
                         for m in range(len(parallel_t)-1):
@@ -917,8 +910,6 @@ class FaceAnimatePipeline(DiffusionPipeline):
                     
                     # Combine results in the correct order
                     combined_noise_pred = []
-                    print('face_animate 808 results.keys():', results.keys(), flush=True)
-                    print('face_animate 809 len(gpu_batches):', len(gpu_batches), flush=True)
                     
                     gflops = 0
                     for batch_idx in range(len(gpu_batches)):

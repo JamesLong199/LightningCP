@@ -640,11 +640,6 @@ class EchoUNet3DConditionModel(ModelMixin, ConfigMixin):
                     # encoder_hidden_states = encoder_hidden_states.repeat(num_parallel, 1, 1)
                     audio_cond_fea = audio_cond_fea.repeat(num_parallel, 1, 1, 1)       
 
-                    # print('unet 3d 649 sample.shape:', sample.shape, flush=True)
-                    # print('unet 3d 659 audio_cond_fea.shape:', audio_cond_fea.shape, flush=True)
-                    # for r in res_samples:
-                    #     print('unet 3d 651 r.shape:', r.shape, flush=True)
-                    
                     sample, _ = upsample_block(
                         hidden_states=sample,
                         temb=emb,

@@ -324,8 +324,7 @@ class VideoPipeline(DiffusionPipeline):
         if gpu_id != 0:
             inputs = move_tensors_to_device(inputs, device)
 
-        print('video_pipeline 293 remove_ref_list:', remove_ref_list, flush=True)
-
+       
         # Process on this GPU
         with torch.no_grad(), thread_flops_counter:
             noise_pred, new_prv_features = denoising_unet(
@@ -426,8 +425,7 @@ class VideoPipeline(DiffusionPipeline):
         # Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
         timesteps = self.scheduler.timesteps
-        # print(f'video_pipeline 176 timesteps: {timesteps}')
-        # assert 0
+
 
         batch_size = 1
 
@@ -523,7 +521,7 @@ class VideoPipeline(DiffusionPipeline):
                     num_slow_step += 1
                 
                 interval_seq_bg, pow = sample_from_quad_center(num_inference_steps, num_slow_step, center=center, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
-                #interval_seq, pow = sample_from_quad(num_inference_steps, num_inference_steps//cache_interval, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
+                # interval_seq, pow = sample_from_quad(num_inference_steps, num_inference_steps//cache_interval, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
                 # print(interval_seq_bg, len(interval_seq_bg), pow)
                 # assert 0
 
@@ -531,8 +529,6 @@ class VideoPipeline(DiffusionPipeline):
         interval_seq_bg = sorted(interval_seq_bg)
 
         interval_seq_bg = interval_seq
-        print('interval_seq_bg:', interval_seq_bg, flush=True)
-
 
         # denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
@@ -558,8 +554,7 @@ class VideoPipeline(DiffusionPipeline):
                     use_cached_bg = False
                 else:
                     use_cached_bg = True
-                print('use_cached_bg:', use_cached_bg, flush=True)
-
+        
                 num_gpus = len(self.gpu_ids) if self.gpu_ids else 1
                 parallel_timesteps = []
                 if i-1 in interval_seq:
@@ -569,8 +564,6 @@ class VideoPipeline(DiffusionPipeline):
                 else:
                     parallel_indices = []
 
-                print('i:', i, flush=True)
-                print('parallel_indices:', parallel_indices, flush=True)
                 parallel_timesteps = [timesteps[j] for j in parallel_indices]
 
                 t = timesteps[i]
@@ -578,8 +571,7 @@ class VideoPipeline(DiffusionPipeline):
                 parallel_t = [t]
                 if len(parallel_timesteps)>1:
                     parallel_t=parallel_timesteps
-                #     print('parallel_t:', parallel_t, flush=True)
-                print('parallel_t:', parallel_t, flush=True)
+     
 
                 # Limit batch size to available GPUs * max_parallel
                 num_timesteps = len(parallel_t)
@@ -606,29 +598,22 @@ class VideoPipeline(DiffusionPipeline):
                 if estimate_input_latents:
                     if i < 3 or i > 18:
                         # print('face animate 620 latent_model_input.shape:', latent_model_input.shape, flush=True)
-                        print('early timesteps: use same latent model input for all parallel timesteps')
                         latent_model_input = latent_model_input.repeat(len(parallel_t), 1, 1, 1, 1)
                         # print('face animate 623 latent_model_input.shape:', latent_model_input.shape, flush=True)
                     else:
                         # latent_input = latent_model_input
-                        print('later timesteps: use different latent model input for each parallel timestep')
                         latent_model_input_list = [latent_model_input]
                         
                         for m in range(len(parallel_t)-1):
-                            # print('face animate 628 latent_model_input.shape:', latent_model_input.shape, flush=True)
-                            # print('face animate 631 noise_pred.shape:', noise_pred.shape, flush=True)
                             latent_model_input = self.scheduler.step(noise_pred[-1].unsqueeze(0), parallel_t[m], latent_model_input, **extra_step_kwargs, return_dict=False)[0]
-                            # print('video_pipeline 596 self.scheduler._step_index:', self.scheduler._step_index, flush=True)
                             latent_model_input_list.append(latent_model_input)
                         
                         self.scheduler._step_index = self.scheduler._step_index - (len(parallel_t)-1)
                         latent_model_input = torch.cat(latent_model_input_list, dim=0)
-                        # print('video_pipeline 596 self.scheduler._step_index:', self.scheduler._step_index, flush=True)
-                        # np.save(f'latent_model_input_parallel.npy', latent_model_input.detach().cpu().numpy())
-                        # assert 0
+                    
                         assert latent_model_input.shape[0] == 2*len(parallel_t) if do_classifier_free_guidance else len(parallel_t)
                 else:
-                    print('estimate_input_latents:', estimate_input_latents, flush=True)
+                    # print('estimate_input_latents:', estimate_input_latents, flush=True)
                     latent_model_input = latent_model_input.repeat(len(parallel_t), 1, 1, 1, 1)
 
                 audio_emotion = torch.tensor(torch.mode(audio_emotion).values.item()).to(
@@ -689,9 +674,6 @@ class VideoPipeline(DiffusionPipeline):
                             bg_features=bg_features,
                         )#.sample
 
-                    # print('video_pipeline 317 noise_pred.shape:', noise_pred.shape, flush=True)
-                    # print('video_pipeline 318 prv_features.shape:', prv_features.shape, flush=True)
-
                     if log_flops:
                         gflops = flops_counter.get_total_flops() / 1e9
             
@@ -707,9 +689,7 @@ class VideoPipeline(DiffusionPipeline):
                     t_index = 0
                     for gpu_idx, batch_size in enumerate(batches_per_gpu):
                         if batch_size > 0:
-                            # print('batch_size:', batch_size, flush=True)
-                            # print('latent_model_input.shape:', latent_model_input.shape, flush=True)
-                            # assert 0
+                        
                             t_batch = parallel_t[t_index:t_index+batch_size]
                             latent_model_input_batch = latent_model_input[t_index:t_index+batch_size*2] if do_classifier_free_guidance else latent_model_input[t_index:t_index+batch_size]
                             gpu_batches.append((gpu_idx, t_batch, latent_model_input_batch))
@@ -719,15 +699,8 @@ class VideoPipeline(DiffusionPipeline):
                     threads = []
                     results = {}
 
-                    print('video_pipeline 663 remove_ref_list:', remove_ref_list, flush=True)
-
+        
                     for batch_idx, (gpu_idx, t_batch, latent_model_input_batch) in enumerate(gpu_batches):    
-                        print('video_pipeline 667 cache_interval:', cache_interval, flush=True)
-                        print('video_pipeline 668 cache_block_id:', cache_block_id, flush=True)
-                        if prv_features is not None:
-                            print('video_pipeline 670 prv_features is not None', flush=True)
-                        else:
-                            print('video_pipeline 672 prv_features is None', flush=True)
                         thread = threading.Thread(
                             target=self.process_on_gpu,
                             kwargs={
@@ -784,10 +757,7 @@ class VideoPipeline(DiffusionPipeline):
                     # Use the last batch's prv_features (typically from GPU 0)
                     prv_features = results[len(gpu_batches)-1]['prv_features']  
 
-                    # if log_flops:
-                    #     print(f"Denoising UNet step took {gflops} GFLOPs", flush=True)
-                    #     flops_list.append(gflops)
-
+                
                 if log_latency:
                     end_event.record()
                     end_event.synchronize()

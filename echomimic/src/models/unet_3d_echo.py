@@ -670,8 +670,6 @@ class EchoUNet3DConditionModel(ModelMixin, ConfigMixin):
             prv_f = replicate_prv_feature
 
         else:
-            print('unet 3d 659 not using cached feature')
-            # print('unet 3d 656 timestep_idx:', timestep_idx)
             for i, downsample_block in enumerate(self.down_blocks):
                 if (
                     hasattr(downsample_block, "has_cross_attention")

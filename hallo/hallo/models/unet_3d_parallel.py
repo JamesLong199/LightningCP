@@ -618,12 +618,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         # print('unet 3d 605 timesteps:', timesteps, flush=True)
         num_parallel = len(timesteps)
         timesteps = timesteps.repeat_interleave(2)
-        # timesteps = timesteps.expand(sample.shape[0]*len(timesteps))
-        print('unet 3d 607 timesteps:', timesteps, flush=True)
 
-        # assert 0
-
-        # now we are here ...
         t_emb = self.time_proj(timesteps)
 
         # timesteps does not contain any weights and will always return f32 tensors
@@ -677,8 +672,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         # down
         down_block_res_samples = (sample,)
-        print('bg_mode:', bg_mode, flush=True)
-        
+
         # with open('bg_mode.txt', 'a') as f:
         #     f.write(f'bg_mode: {bg_mode}\n')
 

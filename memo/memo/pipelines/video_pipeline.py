@@ -275,7 +275,7 @@ class VideoPipeline(DiffusionPipeline):
 
         interval_seq = sorted(interval_seq)
         
-        print('interval_seq:', interval_seq, flush=True)
+        # print('interval_seq:', interval_seq, flush=True)
         
         prv_features = None
         # interval_seq = [0, 1, 2, 4, 7, 12, 16, 18] # non-uniform 3
@@ -340,7 +340,7 @@ class VideoPipeline(DiffusionPipeline):
         # print('cache_interval:', cache_interval)
         interval_seq_bg = sorted(interval_seq_bg)
         interval_seq_bg = interval_seq
-        print('interval_seq_bg:', interval_seq_bg, flush=True)
+        # print('interval_seq_bg:', interval_seq_bg, flush=True)
 
         # assert 0
 
@@ -355,7 +355,7 @@ class VideoPipeline(DiffusionPipeline):
                     use_cached_bg = False
                 else:
                     use_cached_bg = True
-                print('use_cached_bg:', use_cached_bg, flush=True)
+                # print('use_cached_bg:', use_cached_bg, flush=True)
 
                 t = timesteps[i]
                 # Forward reference image

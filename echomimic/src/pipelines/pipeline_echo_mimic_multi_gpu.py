@@ -60,9 +60,6 @@ import threading
         
 
 def get_next_indices(interval_seq, i, max_parallel=float('inf'), num_total=-1):
-    # Case 1: i is in interval_seq - standard behavior with max_parallel limit
-    # print('pipeline 43 interval_seq:', interval_seq, flush=True)
-    # print('pipeline 44 i:', i, flush=True)
 
     if i in interval_seq:
         # print('pipeline 700 i in interval_seq:', i, flush=True)
@@ -73,11 +70,6 @@ def get_next_indices(interval_seq, i, max_parallel=float('inf'), num_total=-1):
             # print('pipeline 704 current_idx == len(interval_seq) - 1:', current_idx, flush=True)
             return []
 
-        # # If i is after the last interval point, return empty list
-        # if interval_seq and i > interval_seq[-1]:
-        #     assert num_total != -1
-        #     print('pipeline 58 i is after the last interval point:', i, flush=True)
-        #     return list(range(i, min(i + max_parallel, num_total)))
         
         next_item = interval_seq[current_idx + 1]
         # print('pipeline 706 next_item:', next_item, flush=True) 
@@ -670,11 +662,11 @@ class Audio2VideoPipeline(DiffusionPipeline):
 
         whisper_chunks = self.audio_guider.feature2chunks(feature_array=whisper_feature, fps=fps)
 
-        print("whisper_chunks:", whisper_chunks.shape)
+        # print("whisper_chunks:", whisper_chunks.shape)
         audio_frame_num = whisper_chunks.shape[0]
         audio_fea_final = torch.Tensor(whisper_chunks).to(dtype=self.vae.dtype, device=self.vae.device)
         audio_fea_final = audio_fea_final.unsqueeze(0)
-        print("audio_fea_final:", audio_fea_final.shape)
+        # print("audio_fea_final:", audio_fea_final.shape)
         video_length = min(video_length, audio_frame_num)
         if video_length < audio_frame_num:
             audio_fea_final = audio_fea_final[:, :video_length, :, :]
@@ -716,7 +708,7 @@ class Audio2VideoPipeline(DiffusionPipeline):
                 interval_seq = list(range(0, num_inference_steps, cache_interval))
      
         interval_seq = sorted(interval_seq)
-        print('interval_seq:', interval_seq)
+        # print('interval_seq:', interval_seq)
 
         # prv_features = None
 
@@ -764,9 +756,9 @@ class Audio2VideoPipeline(DiffusionPipeline):
                 context_overlap,
             )
         )
-        print("ref_image_latents shape:", ref_image_latents.shape)
-        print("face_mask_tensor shape:", face_mask_tensor.shape)
-        print("face_locator_tensor shape:", face_locator_tensor.shape)
+        # print("ref_image_latents shape:", ref_image_latents.shape)
+        # print("face_mask_tensor shape:", face_mask_tensor.shape)
+        # print("face_locator_tensor shape:", face_locator_tensor.shape)
 
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             
@@ -794,10 +786,7 @@ class Audio2VideoPipeline(DiffusionPipeline):
 
                 num_gpus = len(self.gpu_ids) if self.gpu_ids else 1
                 parallel_timesteps = []
-                # print('pipeline 687 t_i:', t_i, flush=True)
-                # print('pipeline 688 interval_seq:', interval_seq, flush=True)
-                # print("pipeline 689 self.max_parallel_per_gpu*num_gpus:", self.max_parallel_per_gpu*num_gpus, flush=True)
-                
+       
                 if t_i-1 in interval_seq and interval_seq.index(t_i-1) != len(interval_seq)-1:
                     parallel_indices = get_next_indices(interval_seq, t_i-1, max_parallel=self.max_parallel_per_gpu*num_gpus, num_total=num_inference_steps)
                 elif t_i not in interval_seq and t_i < num_inference_steps-1:
@@ -805,16 +794,11 @@ class Audio2VideoPipeline(DiffusionPipeline):
                 else:
                     parallel_indices = []
 
-                print('t_i:', t_i, flush=True)
-                print('parallel_indices:', parallel_indices, flush=True)
-                # assert 0
                 parallel_timesteps = [timesteps[j] for j in parallel_indices]
 
                 parallel_t = [timesteps[t_i]]
                 if len(parallel_timesteps)>1:
                     parallel_t=parallel_timesteps
-                #     print('parallel_t:', parallel_t, flush=True)
-                print('parallel_t:', parallel_t, flush=True)
 
                 # Limit batch size to available GPUs * max_parallel
                 num_timesteps = len(parallel_t)
@@ -1145,23 +1129,9 @@ class Audio2VideoPipeline(DiffusionPipeline):
                         print(f"Denoising UNet step {t_i} took {time_elapsed} seconds for current context", flush=True)
                         denoising_times.append(time_elapsed)
 
-                        # if latency_count == 90:
-                        #     print("context:", new_context, flush=True)
-                        #     print("t_i:", t_i, flush=True)
-                        #     print("parallel_t:", parallel_t, flush=True)
-                        #     print("len(parallel_t):", len(parallel_t), flush=True)
-                        
-                        # if latency_count == 150:
-                        #     assert 0
-
                         latency_count += 1
 
-                    # if log_flops:
-                    #     print(f"Denoising UNet step {t_i} took {gflops} GFLOPs for current context", flush=True)
-                    #     flops_list.append(gflops)
-
-                    # print('pipeline 985 pred.shape:', pred.shape, flush=True)
-                    # if len(parallel_t) == 1:
+     
                     if acc:
                         # print('pipeline 969 t:', t, flush=True)
                         alphas_cumprod = self.scheduler.alphas_cumprod.to(latent_model_input.device)
