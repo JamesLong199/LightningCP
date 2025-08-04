@@ -51,20 +51,20 @@ datasets/
 *.tar
 *.tar.gz
 *.rar
-*.mp4
-*.wav
 *.txt
-*.png
-*.jpg
-*.jpeg
 *.pdf
+# *.mp4
+# *.wav
+# *.jpeg
+# *.png
+# *.jpg
+# *.npy
 
 # Model weights and checkpoints
 *.pth
 *.pt
 *.ckpt
 *.onnx
-*.npy
 checkpoints/
 weights/
 assets/
