@@ -728,9 +728,10 @@ class Audio2VideoPipeline(DiffusionPipeline):
                 # assert 0
 
         interval_seq_bg = sorted(interval_seq_bg)
-        interval_seq_bg = interval_seq
-        # interval_seq_bg = [0, 1, 2 ,3, 6, 9, 12, 17, 24, 27]
-        # interval_seq_bg = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 17, 24, 27]
+        # interval_seq_bg = interval_seq
+        interval_seq_bg = [0, 3, 6, 9, 12, 17, 24, 27] # hardcode for ablation experiment
+        # interval_seq_bg = [0, 1, 3, 5] # hardcode for ablation experiment
+
 
         if log_latency:
             start_event = torch.cuda.Event(enable_timing=True)
@@ -928,7 +929,7 @@ class Audio2VideoPipeline(DiffusionPipeline):
                         # print('pipeline 850 latent_model_input.mean():', latent_model_input.mean(), flush=True)
                         assert latent_model_input.shape[0] == 2*len(parallel_t) if do_classifier_free_guidance else len(parallel_t)
                     else:
-                        print('estimate_input_latents:', estimate_input_latents, flush=True)
+                        # print('estimate_input_latents:', estimate_input_latents, flush=True)
                         latent_model_input = (
                             torch.cat([latents[:, :, c] for c in new_context])
                             .to(device)

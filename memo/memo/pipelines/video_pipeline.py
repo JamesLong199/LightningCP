@@ -340,7 +340,7 @@ class VideoPipeline(DiffusionPipeline):
         # print('cache_interval:', cache_interval)
         interval_seq_bg = sorted(interval_seq_bg)
         interval_seq_bg = interval_seq
-        # print('interval_seq_bg:', interval_seq_bg, flush=True)
+        print('interval_seq_bg:', interval_seq_bg, flush=True)
 
         # assert 0
 

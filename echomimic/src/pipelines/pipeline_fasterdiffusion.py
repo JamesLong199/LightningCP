@@ -756,8 +756,8 @@ class Audio2VideoPipeline(DiffusionPipeline):
                                     down_block_res_samples[i][:, :, c] = self.denoising_unet.skip_feature[i]
 
                         if log_flops:
-                            gflops_down = flops_counter.get_total_flops() / 1e9
-                            print(f"UNet encoder took {gflops_down} GFLOPs", flush=True)
+                            gflops = flops_counter.get_total_flops() / 1e9
+                            print(f"UNet encoder took {gflops} GFLOPs", flush=True)
 
                     else:
                         with flops_counter:

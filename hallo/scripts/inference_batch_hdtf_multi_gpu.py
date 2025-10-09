@@ -373,6 +373,7 @@ def process_single_pair(
             cache_layer_id=config.deepcache_kwargs.cache_layer_id, 
             cache_block_id=config.deepcache_kwargs.cache_block_id, 
             uniform=config.deepcache_kwargs.uniform,
+            interval_seq=config.deepcache_kwargs.interval_seq,
             ############ parallel unet ############
             estimate_input_latents=config.parallel_unet_kwargs.estimate_input_latents,
             ############# ours ############
@@ -430,7 +431,8 @@ def batch_inference(args):
                 f'cache_interval={config.deepcache_kwargs.cache_interval}\n'
                 f'cache_layer_id={config.deepcache_kwargs.cache_layer_id}\n'
                 f'cache_block_id={config.deepcache_kwargs.cache_block_id}\n'
-                f'uniform={config.deepcache_kwargs.uniform}\n')
+                f'uniform={config.deepcache_kwargs.uniform}\n'
+                f'interval_seq={config.deepcache_kwargs.interval_seq}\n')
         f.write(f'BG Cache params:\n'
                 f'bg_cache_interval={config.bg_cache_kwargs.bg_cache_interval}\n'
                 f'use_masked_attention={config.bg_cache_kwargs.use_masked_attention}\n'
@@ -477,7 +479,7 @@ def batch_inference(args):
     for basename in audio_dict:
         if basename in image_dict and basename in mask_dict:
             pairs.append((image_dict[basename], audio_dict[basename], mask_dict[basename], basename))
-    
+
     print(f"Found {len(pairs)} matching (image, audio, mask) pairs")
     
     # Load models with multi-GPU support

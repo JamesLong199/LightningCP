@@ -202,6 +202,7 @@ def register_parallel_pipeline(pipe, mod='50ls'):
             max_parallel_per_gpu: int = 3,
             **kwargs,
         ):
+            print('util_fasterdiffusion 205 cond:', cond)
             # Default height and width to unet
             height = height or self.unet.config.sample_size * self.vae_scale_factor
             width = width or self.unet.config.sample_size * self.vae_scale_factor
@@ -720,6 +721,7 @@ def register_faster_forward_multi_gpu(model, mod = '50ls'):
             # The overall upsampling factor is equal to 2 ** (# num of upsampling layears).
             # However, the upsampling interpolation output size can be forced to fit any upsampling size
             # on the fly if necessary.
+            print('util_fasterdiffusion_multi_gpu 724 cond:', cond)
             assert mode in ['full', 'down_only', 'up_only']
             default_overall_up_factor = 2**self.num_upsamplers
 

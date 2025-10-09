@@ -526,7 +526,7 @@ class FaceAnimatePipeline(DiffusionPipeline):
 
         # print('cache_interval:', cache_interval)
         interval_seq_bg = sorted(interval_seq_bg)
-        # interval_seq_bg = interval_seq
+        interval_seq_bg = interval_seq
 
         # denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order

@@ -311,7 +311,7 @@ class ReferenceAttentionControl:
                         norm_hidden_states = get_fg_tokens(mask_fg, norm_hidden_states)
                         bank_fea = [get_fg_tokens(mask_fg, d) for d in bank_fea]
                         hidden_states = get_fg_tokens(mask_fg, hidden_states)
-                        # print('mutual_self_attention 313 hidden_states.shape:', hidden_states.shape, flush=True)
+                        print('mutual_self_attention 313 hidden_states.shape:', hidden_states.shape, flush=True)
                         # assert 0
 
                     if remove_ref:

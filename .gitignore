@@ -53,12 +53,12 @@ datasets/
 *.rar
 *.txt
 *.pdf
-# *.mp4
-# *.wav
-# *.jpeg
-# *.png
-# *.jpg
-# *.npy
+*.mp4
+*.wav
+*.jpeg
+*.png
+*.jpg
+*.npy
 
 # Model weights and checkpoints
 *.pth

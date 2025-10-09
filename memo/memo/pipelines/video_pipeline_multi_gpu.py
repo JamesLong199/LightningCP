@@ -402,6 +402,7 @@ class VideoPipeline(DiffusionPipeline):
         cache_block_id: int = None,
         uniform: bool = True,
         pow: float = None,
+        interval_seq: List[int] = [],
         # ours
         mask_fg=None, # added: {64: mask_64, 32: mask_32}
         bg_cache_interval: int = 1,
@@ -453,23 +454,26 @@ class VideoPipeline(DiffusionPipeline):
         )
 
         # DeepCache
-        if cache_interval == 1:
-            interval_seq = list(range(num_inference_steps))
-        else:
-            if uniform:
-                interval_seq = list(range(0, num_inference_steps, cache_interval))
+        if interval_seq is None:
+            if cache_interval == 1:
+                interval_seq = list(range(num_inference_steps))
             else:
-                num_slow_step = num_inference_steps//cache_interval
-                if num_inference_steps%cache_interval != 0:
-                    num_slow_step += 1
+                if uniform:
+                    interval_seq = list(range(0, num_inference_steps, cache_interval))
+                else:
+                    num_slow_step = num_inference_steps//cache_interval
+                    if num_inference_steps%cache_interval != 0:
+                        num_slow_step += 1
 
         interval_seq = sorted(interval_seq)
         prv_features = None
         # interval_seq = [0, 1, 2, 4, 7, 12, 16, 18] # non-uniform 3
         # interval_seq = [0, 1, 2, 3, 4, 5, 6, 9, 12, 15, 18] # non-uniform 1
         # interval_seq = [0, 1, 2, 3, 6, 9, 12, 15, 18] # non-uniform 1
-        interval_seq = [0, 1, 2, 3, 6, 12, 15, 18] # non-uniform 1
+        # interval_seq = [0, 1, 2, 3, 6, 12, 15, 18] # non-uniform 1
 
+
+        print('video_pipeline_multi_gpu 475 interval_seq:', interval_seq, flush=True)
         # Prepare extra step kwargs.
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
 
@@ -528,7 +532,8 @@ class VideoPipeline(DiffusionPipeline):
         # print('cache_interval:', cache_interval)
         interval_seq_bg = sorted(interval_seq_bg)
 
-        interval_seq_bg = interval_seq
+        # interval_seq_bg = interval_seq
+        interval_seq_bg = [0, 1, 2, 3, 6, 12, 15, 18] # hardcode for ablation experiment
 
         # denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order

@@ -176,7 +176,7 @@ def process_single_pair(
     Returns:
         str: Path to the output video file
     """
-    basename = f"{get_file_basename(input_image_path)}_{get_file_basename(input_audio_path)}"
+    basename = f"{get_file_basename(input_audio_path)}"
     logger.info(f"Processing pair: {basename}")
     
     # Create subdirectory for this pair's intermediate files
@@ -361,11 +361,12 @@ def main():
     config = OmegaConf.merge(config, cli_args)
     
     # Create output directory
-    os.makedirs(args.output_dir, exist_ok=True)
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = args.output_dir + f'_{timestamp}'
+    os.makedirs(output_dir, exist_ok=True)
     
     # Create log file
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = os.path.join(args.output_dir, f"performance_log_{timestamp}.txt")
+    log_file = os.path.join(output_dir, f"performance_log_{timestamp}.txt")
     
     # Write config to log
     with open(log_file, 'w') as f:
@@ -540,7 +541,7 @@ def main():
         output_path = process_single_pair(
             image_path,
             audio_path,
-            args.output_dir,
+            output_dir,
             config,
             net,
             pipeline,

@@ -467,6 +467,7 @@ class FaceAnimatePipeline(DiffusionPipeline):
         cache_block_id: int = None,
         uniform: bool = True,
         pow: float = None,
+        interval_seq: List[int] = [],
         center: int = None,
         num_images_per_prompt=1,
         eta: float = 0.0,
@@ -568,20 +569,21 @@ class FaceAnimatePipeline(DiffusionPipeline):
             generator,
         )
 
-        if cache_interval == 1:
-            interval_seq = list(range(num_inference_steps))
-        else:
-            if uniform:
-                interval_seq = list(range(0, num_inference_steps, cache_interval))
+        if interval_seq is None:
+            if cache_interval == 1:
+                interval_seq = list(range(num_inference_steps))
             else:
-                num_slow_step = num_inference_steps//cache_interval
-                if num_inference_steps%cache_interval != 0:
-                    num_slow_step += 1
-                
-                interval_seq, pow = sample_from_quad_center(num_inference_steps, num_slow_step, center=center, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
-                #interval_seq, pow = sample_from_quad(num_inference_steps, num_inference_steps//cache_interval, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
-                print(interval_seq, len(interval_seq), pow)
-                # assert 0
+                if uniform:
+                    interval_seq = list(range(0, num_inference_steps, cache_interval))
+                else:
+                    num_slow_step = num_inference_steps//cache_interval
+                    if num_inference_steps%cache_interval != 0:
+                        num_slow_step += 1
+                    
+                    interval_seq, pow = sample_from_quad_center(num_inference_steps, num_slow_step, center=center, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
+                    #interval_seq, pow = sample_from_quad(num_inference_steps, num_inference_steps//cache_interval, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
+                    print(interval_seq, len(interval_seq), pow)
+                    # assert 0
 
         # print('cache_interval:', cache_interval)
         interval_seq = sorted(interval_seq)
@@ -589,8 +591,8 @@ class FaceAnimatePipeline(DiffusionPipeline):
 
         # interval_seq = [0, 3, 6, 9, 12, 18, 24, 30, 36, 38] # non-uniform 1
         # interval_seq = [0, 3, 6, 9, 12, 15, 18, 24, 30, 36, 38] # non-uniform 2
-        interval_seq = [0, 3, 6, 9, 12, 15, 18, 21, 33, 36, 39] # non-uniform 3
-
+        # interval_seq = [0, 3, 6, 9, 12, 15, 18, 21, 33, 36, 39] # non-uniform 3
+        print('face_animate 594 interval_seq:', interval_seq, flush=True)
 
         # Prepare extra step kwargs.
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
@@ -688,7 +690,8 @@ class FaceAnimatePipeline(DiffusionPipeline):
 
         interval_seq_bg = sorted(interval_seq_bg)
 
-        interval_seq_bg = interval_seq # non-uniform 3
+        # interval_seq_bg = interval_seq # non-uniform 3
+        interval_seq_bg = [0, 3, 6, 9, 12, 15, 18, 21, 33, 36, 39] # hardcode for ablation experiment
 
         # denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order

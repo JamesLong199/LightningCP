@@ -385,6 +385,7 @@ class TemporalBasicTransformerBlock(nn.Module):
             norm_hidden_states = get_fg_tokens(mask_fg, norm_hidden_states)
             ref_img_feature = get_fg_tokens(mask_fg, ref_img_feature)
             hidden_states = get_fg_tokens(mask_fg, hidden_states)
+            print('attention 388 hidden_states.shape:', hidden_states.shape, flush=True)
 
         if remove_ref:
             modify_norm_hidden_states = norm_hidden_states
