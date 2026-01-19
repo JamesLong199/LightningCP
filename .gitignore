@@ -69,6 +69,23 @@ checkpoints/
 weights/
 assets/
 pretrained*/
+performance_plots/
+
+# Locally kept, but removed from git history (cleanup)
+echomimic/src/models/unet_3d.py
+echomimic/src/models/utils_fasterdiffusion.py
+echomimic/src/pipelines/pipeline_echo_mimic.py
+echomimic/src/pipelines/pipeline_echo_mimic_acc.py
+echomimic/src/pipelines/pipeline_echo_mimic_pose.py
+echomimic/src/pipelines/pipeline_echo_mimic_pose_acc.py
+echomimic/src/pipelines/pipeline_echo_mimic_reordered.py
+echomimic/src/pipelines/pipeline_fasterdiffusion.py
+echomimic/src/utils/draw_utils.py
+echomimic/src/utils/face_landmark.py
+echomimic/src/utils/img_utils.py
+echomimic/src/utils/motion_utils.py
+echomimic/src/utils/mp_utils.py
+
 
 # Compiled C/C++ extensions
 build/
@@ -83,3 +100,21 @@ dist/
 *.pem
 *.key
 *.json
+
+# Locally kept, but removed from git history (cleanup)
+hallo/hallo/animate/face_animate_original.py
+hallo/hallo/animate/face_animate_parallel.py
+hallo/hallo/animate/face_animate_static.py
+hallo/hallo/animate/fasterdiffusion_multi_gpu.py
+hallo/hallo/datasets/mask_image.py
+hallo/hallo/datasets/talk_video.py
+hallo/hallo/models/unet_3d_original.py
+hallo/hallo/models/utils_fasterdiffusion.py
+hallo/hallo/utils/meter.py
+
+# Locally kept, but removed from git history (cleanup)
+memo/memo/models/utils_fasterdiffusion.py
+memo/memo/pipelines/fasterdiffusion_multi_gpu.py
+memo/memo/utils/tensor_utils.py
+memo/memo/datasets/video_dataset.py
+
