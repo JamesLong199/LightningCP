@@ -425,8 +425,6 @@ class CrossAttnDownBlock3D(nn.Module):
         ):
             # self.gradient_checkpointing = False
             if self.training and self.gradient_checkpointing:
-                print(f"unet 3d blocks 425 training and gradient checkpointing")
-
                 def create_custom_forward(module, return_dict=None):
                     def custom_forward(*inputs):
                         if return_dict is not None:

@@ -385,7 +385,6 @@ class TemporalBasicTransformerBlock(nn.Module):
             norm_hidden_states = get_fg_tokens(mask_fg, norm_hidden_states)
             ref_img_feature = get_fg_tokens(mask_fg, ref_img_feature)
             hidden_states = get_fg_tokens(mask_fg, hidden_states)
-            print('attention 388 hidden_states.shape:', hidden_states.shape, flush=True)
 
         if remove_ref:
             modify_norm_hidden_states = norm_hidden_states
@@ -411,11 +410,6 @@ class TemporalBasicTransformerBlock(nn.Module):
             else:
                 modify_norm_hidden_states_fg = get_masked_tokens(mask_fg, modify_norm_hidden_states, 'fg_encoder')
                 modify_norm_hidden_states_bg = get_masked_tokens(mask_fg, modify_norm_hidden_states, 'bg_encoder')
-
-            print('attention 406 norm_hidden_states_fg.shape:', hidden_states_fg.shape, flush=True)
-            print('attention 407 norm_hidden_states_bg.shape:', norm_hidden_states_bg.shape, flush=True)
-            print('attention 408 modify_norm_hidden_states_fg.shape:', modify_norm_hidden_states_fg.shape, flush=True)
-            print('attention 409 modify_norm_hidden_states_bg.shape:', modify_norm_hidden_states_bg.shape, flush=True)
 
             hidden_states_uc_fg = (
                 self.attn1(
@@ -730,9 +724,6 @@ class JointAudioTemporalBasicTransformerBlock(nn.Module):
             
             norm_hidden_states_fg = get_masked_tokens(mask_fg, norm_hidden_states, 'fg')
             norm_hidden_states_bg = get_masked_tokens(mask_fg, norm_hidden_states, 'bg')
-
-            print('audio attention 714 norm_hidden_states_fg.shape:', norm_hidden_states_fg.shape, flush=True)
-            print('audio attention 715 norm_hidden_states_bg.shape:', norm_hidden_states_bg.shape, flush=True)
 
             hidden_states_fg = (
                 self.attn1(norm_hidden_states_fg, attention_mask=attention_mask,

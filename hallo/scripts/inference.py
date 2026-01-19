@@ -220,8 +220,6 @@ def inference_process(args: argparse.Namespace):
     ) as audio_processor:
         audio_emb, audio_length = audio_processor.preprocess(driving_audio_path, clip_length)
 
-    print('inference 269 audio_emb.shape:', audio_emb.shape, flush=True) # 192, 12, 768
-
     # 4. build modules
     sched_kwargs = OmegaConf.to_container(config.noise_scheduler_kwargs)
     if config.enable_zero_snr:
@@ -307,7 +305,6 @@ def inference_process(args: argparse.Namespace):
     pipeline.to(device=device, dtype=weight_dtype)
 
     audio_emb = process_audio_emb(audio_emb)
-    print('inference 356 audio_emb.shape:', audio_emb.shape, flush=True) # 192, 5, 12, 768
 
     source_image_pixels = source_image_pixels.unsqueeze(0)
     source_image_face_region = source_image_face_region.unsqueeze(0)
@@ -365,12 +362,10 @@ def inference_process(args: argparse.Namespace):
         audio_tensor = audio_emb[
             t * clip_length: min((t + 1) * clip_length, audio_emb.shape[0])
         ]
-        print('inference 409 audio_tensor.shape:', audio_tensor.shape, flush=True) # 16, 5, 12, 768
         audio_tensor = audio_tensor.unsqueeze(0)
         audio_tensor = audio_tensor.to(
             device=net.audioproj.device, dtype=net.audioproj.dtype)
         audio_tensor = net.audioproj(audio_tensor)
-        print('inference 414 audio_tensor.shape:', audio_tensor.shape, flush=True) # 1, 16, 32, 768
         
         # Compute similarity matrix between frames
         # similarity_matrix = compute_frame_similarity(audio_tensor)
@@ -434,7 +429,6 @@ def inference_process(args: argparse.Namespace):
         # print(f"Video {prompt_idx}: {time_elapsed:.2f} s | {gflpos:.6e} G")
 
         tensor_result.append(pipeline_output.videos)
-        print('inference 430 pipeline_output.videos.shape:', pipeline_output.videos.shape, flush=True) # 1, 16, 256, 256
 
         # np.save('tensor_result_2.npy', pipeline_output.videos.detach().cpu().numpy())
         # Save the current pipeline output videos
@@ -449,10 +443,7 @@ def inference_process(args: argparse.Namespace):
 
     tensor_result = torch.cat(tensor_result, dim=2)
     tensor_result = tensor_result.squeeze(0)
-
-    print('inference 470 tensor_result.shape:', tensor_result.shape, flush=True) 
     tensor_result = tensor_result[:, :audio_length]
-    print('inference 472 tensor_result.shape:', tensor_result.shape, flush=True) 
 
     # np.save('tensor_result.npy', tensor_result.cpu().numpy())
 

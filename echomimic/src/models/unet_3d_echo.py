@@ -549,7 +549,6 @@ class EchoUNet3DConditionModel(ModelMixin, ConfigMixin):
         down_block_res_samples = (sample,)
 
         if quick_replicate and replicate_prv_feature is not None:
-            print('unet 3d 544 using cached feature')
             if not superfast_replicate:
                 for i, downsample_block in enumerate(self.down_blocks):
                     if i > cache_layer_id:

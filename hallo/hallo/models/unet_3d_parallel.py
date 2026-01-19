@@ -630,15 +630,12 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         # print('unet 3d 620 emb.shape:', emb.shape, flush=True) 
 
         if self.class_embedding is not None:
-            print('unet 3d 625 self.class_embedding is not None', flush=True)
             if class_labels is None:
-                print('unet 3d 627 class_labels is None', flush=True)
                 raise ValueError(
                     "class_labels should be provided when num_class_embeds > 0"
                 )
 
             if self.config.class_embed_type == "timestep":
-                print('unet 3d 630 self.config.class_embed_type == "timestep"', flush=True)
                 class_labels = self.time_proj(class_labels)
 
             class_emb = self.class_embedding(class_labels).to(dtype=self.dtype)

@@ -686,7 +686,6 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
                     if i > cache_layer_id:
                         break
 
-                    print('unet 3d 689 downsample_block:', i)
                     if (
                         hasattr(downsample_block, "has_cross_attention")
                         and downsample_block.has_cross_attention

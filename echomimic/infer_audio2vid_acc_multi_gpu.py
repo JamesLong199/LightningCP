@@ -204,7 +204,6 @@ def main():
     # multi-gpu
     multi_gpu_denoising_unets = None
     gpu_ids = None
-    print('inference 206 device:', device, flush=True)
     if device == "cuda":
         if hasattr(config, 'parallel_unet_kwargs') and config.parallel_unet_kwargs.gpu_ids:
             gpu_ids = config.parallel_unet_kwargs.gpu_ids

@@ -567,9 +567,6 @@ class TemporalBasicTransformerBlock(nn.Module):
         Returns:
             torch.FloatTensor: The output tensor after passing through the transformer block with shape (batch_size, seq_len, dim).
         """
-        print(f"Forward called on TemporalBasicTransformerBlock instance: {id(self)}", flush=True)
-        print(f"Forward method defined in: {__file__}", flush=True)
-        assert 0  # This should trigger if the method is called
         norm_hidden_states = (
             self.norm1(hidden_states, timestep)
             if self.use_ada_layer_norm
@@ -577,8 +574,6 @@ class TemporalBasicTransformerBlock(nn.Module):
         )
 
         if self.unet_use_cross_frame_attention:
-            print('attention 570 unet_use_cross_frame_attention', flush=True)
-            start_time = time.time()
             hidden_states = (
                 self.attn1(
                     norm_hidden_states,
@@ -587,17 +582,11 @@ class TemporalBasicTransformerBlock(nn.Module):
                 )
                 + hidden_states
             )
-            end_time = time.time()
-            print(f'attention 581 attn1 time: {end_time - start_time}', flush=True)
         else:
-            print('attention 583 not unet_use_cross_frame_attention', flush=True)
-            start_time = time.time()
             hidden_states = (
                 self.attn1(norm_hidden_states, attention_mask=attention_mask)
                 + hidden_states
             )
-            end_time = time.time()
-            print(f'attention 590 attn1 time: {end_time - start_time}', flush=True)
 
         if self.attn2 is not None:
             # Cross-Attention
@@ -606,7 +595,6 @@ class TemporalBasicTransformerBlock(nn.Module):
                 if self.use_ada_layer_norm
                 else self.norm2(hidden_states)
             )
-            start_time = time.time()
             hidden_states = (
                 self.attn2(
                     norm_hidden_states,
@@ -615,14 +603,9 @@ class TemporalBasicTransformerBlock(nn.Module):
                 )
                 + hidden_states
             )
-            end_time = time.time()
-            print(f'attention 600 attn2 time: {end_time - start_time}', flush=True)
 
         # Feed-forward
-        start_time = time.time()
         hidden_states = self.ff(self.norm3(hidden_states)) + hidden_states
-        end_time = time.time()
-        print(f'attention 615 ff time: {end_time - start_time}', flush=True)
 
         # Temporal-Attention
         if self.unet_use_temporal_attention:
@@ -635,10 +618,7 @@ class TemporalBasicTransformerBlock(nn.Module):
                 if self.use_ada_layer_norm
                 else self.norm_temp(hidden_states)
             )
-            start_time = time.time()
             hidden_states = self.attn_temp(norm_hidden_states) + hidden_states
-            end_time = time.time()
-            print(f'attention 631 attn_temp time: {end_time - start_time}', flush=True)
             hidden_states = rearrange(
                 hidden_states, "(b d) f c -> (b f) d c", d=d)
 
@@ -896,9 +876,6 @@ class AudioTemporalBasicTransformerBlock(nn.Module):
                         
                 norm_hidden_states_fg = get_masked_tokens(mask_fg, norm_hidden_states, 'fg')
                 norm_hidden_states_bg = get_masked_tokens(mask_fg, norm_hidden_states, 'bg')
-
-                print('audio attention 897 norm_hidden_states_fg.shape:', norm_hidden_states_fg.shape, flush=True)
-                print('audio attention 898 norm_hidden_states_bg.shape:', norm_hidden_states_bg.shape, flush=True)
 
                 hidden_states_fg = (
                     self.attn1(norm_hidden_states_fg, attention_mask=attention_mask,

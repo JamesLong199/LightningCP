@@ -419,15 +419,12 @@ class FaceAnimatePipeline(DiffusionPipeline):
                     
                     interval_seq, pow = sample_from_quad_center(num_inference_steps, num_slow_step, center=center, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
                     #interval_seq, pow = sample_from_quad(num_inference_steps, num_inference_steps//cache_interval, pow=pow)#[0, 3, 6, 9, 12, 16, 22, 28, 35, 43,]
-                    print(interval_seq, len(interval_seq), pow)
                     # assert 0
 
         # print('cache_interval:', cache_interval)
         interval_seq = sorted(interval_seq)
 
         prv_features = None
-
-        print('face_animate 418 interval_seq:', interval_seq, flush=True)
 
         # Prepare extra step kwargs.
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)

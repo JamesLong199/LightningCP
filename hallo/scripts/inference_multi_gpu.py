@@ -418,12 +418,10 @@ def inference_process(args: argparse.Namespace):
         audio_tensor = audio_emb[
             t * clip_length: min((t + 1) * clip_length, audio_emb.shape[0])
         ]
-        print('inference 409 audio_tensor.shape:', audio_tensor.shape, flush=True) # 16, 5, 12, 768
         audio_tensor = audio_tensor.unsqueeze(0)
         audio_tensor = audio_tensor.to(
             device=net.audioproj.device, dtype=net.audioproj.dtype)
         audio_tensor = net.audioproj(audio_tensor)
-        print('inference 414 audio_tensor.shape:', audio_tensor.shape, flush=True) # 1, 16, 32, 768
         
         if not config.bg_cache_kwargs.use_masked_attention and config.bg_cache_kwargs.bg_cache_interval <= 1:
             source_fg_mask = None
@@ -466,7 +464,6 @@ def inference_process(args: argparse.Namespace):
         )
         
         tensor_result.append(pipeline_output.videos)
-        print('inference 430 pipeline_output.videos.shape:', pipeline_output.videos.shape, flush=True) # 1, 16, 256, 256
         np.save('tensor_result_parallel_multi_2.npy', pipeline_output.videos.detach().cpu().numpy())
 
         # Save the current pipeline output videos

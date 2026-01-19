@@ -473,7 +473,6 @@ class VideoPipeline(DiffusionPipeline):
         # interval_seq = [0, 1, 2, 3, 6, 12, 15, 18] # non-uniform 1
 
 
-        print('video_pipeline_multi_gpu 475 interval_seq:', interval_seq, flush=True)
         # Prepare extra step kwargs.
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
 
