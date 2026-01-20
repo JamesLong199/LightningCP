@@ -118,3 +118,12 @@ memo/memo/pipelines/fasterdiffusion_multi_gpu.py
 memo/memo/utils/tensor_utils.py
 memo/memo/datasets/video_dataset.py
 
+
+# Local experiment configs (keep locally, ignore in git)
+echomimic/configs/prompts/*_vi*.yaml
+hallo/configs/inference/*_vi*.yaml
+memo/configs/*_vi*.yaml
+hallo/configs/inference/deepcache_nonuniform_8.yaml
+hallo/configs/inference/single_gpu_remove_ref_d01_bg_8a.yaml
+hallo/configs/inference/single_gpu_remove_ref_d01_bg_8b.yaml
+memo/configs/memo_lcp_single_gpu_10.yaml
